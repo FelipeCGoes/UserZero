@@ -1,0 +1,12 @@
+flow: gerar-relatorio
+mode: ui
+steps:
+  - { id: s1, action: goto, url: "https://example.com/reports" }
+  - { id: s3, action: click, selector: '[data-testid="generate"]', goal: "iniciar a geração" }
+  - { id: s4, action: wait_for, selector: '[data-testid="report-body"]', timeout_ms: 300000, capture: { name: report_text, latency: true } }
+  - { id: s7, action: wait_for, selector: '[data-testid="report-body"][data-version="2"]', timeout_ms: 120000, capture: { name: report_text_v2, latency: true } }
+contracts:
+  - { type: language, target: report_text, expect: pt-BR }
+  - { type: format, target: report_text, sections: [Resumo, Análise, Riscos], no_placeholders: true }
+  - { type: latency, from: s3, to: s4, p95_max_s: 5 }
+  - { type: change_scope, before: report_text, after: report_text_v2, allowed_section: 2 }

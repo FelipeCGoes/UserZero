@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-08-08T16:48:18.164940+00:00",
+  "contracts": {
+    "language:report_text": {
+      "pass_rate": 0.8,
+      "n": 10,
+      "passes": 8
+    },
+    "format:report_text": {
+      "pass_rate": 0.8,
+      "n": 10,
+      "passes": 8
+    },
+    "latency:s3-s4": {
+      "pass_rate": 0.9,
+      "n": 10,
+      "passes": 9
+    },
+    "change_scope:report_text": {
+      "pass_rate": 0.8,
+      "n": 10,
+      "passes": 8
+    }
+  },
+  "latency": {
+    "latency:s3-s4": {
+      "n": 9,
+      "min_s": 1.85,
+      "p50_s": 2.05,
+      "p95_s": 6.33,
+      "max_s": 9.05,
+      "p95_max_s": 5,
+      "p95_violated": true
+    }
+  }
+}

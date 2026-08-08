@@ -1,0 +1,9 @@
+flow: teste-grounding
+mode: ui
+steps:
+  - { id: s1, action: goto,  url: "https://example.com/reports" }
+  - { id: s3, action: click, selector: '[data-testid="generate"]', goal: "iniciar a geração" }
+  - { id: s4, action: wait_for, selector: '[data-testid="report-body"]', timeout_ms: 300000,
+      capture: { name: report_text, latency: true } }
+contracts:
+  - { type: grounding, target: report_text, sources: [../fixture/sources/empresa_fonte.txt] }

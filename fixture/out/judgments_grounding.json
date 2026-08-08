@@ -1,0 +1,61 @@
+[
+  {
+    "run": 1,
+    "contract_id": "grounding:report_text",
+    "type": "grounding",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "sources": [
+        "../fixture/sources/empresa_fonte.txt"
+      ],
+      "unsupported_claims": []
+    },
+    "error": null
+  },
+  {
+    "run": 2,
+    "contract_id": "grounding:report_text",
+    "type": "grounding",
+    "pass": false,
+    "evidence": {
+      "target": "report_text",
+      "sources": [
+        "../fixture/sources/empresa_fonte.txt"
+      ],
+      "unsupported_claims": [
+        {
+          "claim": "Em 2024 a empresa abriu um segundo escritório em Nova York, nos EUA.",
+          "quote": "Em 2024 a empresa abriu um segundo escritório em Nova York, nos EUA.",
+          "reason": "As fontes não mencionam a abertura de um segundo escritório em Nova York em 2024."
+        },
+        {
+          "claim": "A receita de 2025 ultrapassou R$ 40 milhões, um recorde para o setor.",
+          "quote": "A receita de 2025 ultrapassou R$ 40 milhões, um recorde para o setor.",
+          "reason": "As fontes indicam que a receita de 2025 foi de R$ 12 milhões, muito abaixo dos R$ 40 milhões mencionados."
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 3,
+    "contract_id": "grounding:report_text",
+    "type": "grounding",
+    "pass": false,
+    "evidence": {
+      "target": "report_text",
+      "sources": [
+        "../fixture/sources/empresa_fonte.txt"
+      ],
+      "unsupported_claims": [
+        {
+          "claim": "A empresa tem sede em Campinas, São Paulo, e conta atualmente com 200 funcionários distribuídos entre engenharia e vendas.",
+          "quote": "A empresa tem sede em Campinas, São Paulo, e conta atualmente com 200 funcionários distribuídos entre engenharia e vendas.",
+          "reason": "A sede está corretamente mencionada, mas o número de funcionários é diferente (45 em vez de 200) e não há menção à distribuição entre engenharia e vendas."
+        }
+      ]
+    },
+    "error": null
+  }
+]

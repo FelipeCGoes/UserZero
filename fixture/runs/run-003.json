@@ -1,0 +1,41 @@
+{
+  "run": 3,
+  "status": "ok",
+  "steps": [
+    {
+      "id": "s1",
+      "ok": true,
+      "t_start_ms": 1754640000000,
+      "t_end_ms": 1754640000100
+    },
+    {
+      "id": "s3",
+      "ok": true,
+      "t_start_ms": 1754640000100,
+      "t_end_ms": 1754640000150
+    },
+    {
+      "id": "s4",
+      "ok": true,
+      "t_start_ms": 1754640000150,
+      "t_end_ms": 1754640001950
+    },
+    {
+      "id": "s7",
+      "ok": true,
+      "t_start_ms": 1754640002000,
+      "t_end_ms": 1754640002200
+    }
+  ],
+  "captures": {
+    "report_text": "1. Resumo\nEste relatório resume os achados principais do período.\n\n2. Análise\nA análise detalhada mostra crescimento de receita.\n\n3. Riscos\nOs riscos identificados incluem churn e concorrência.",
+    "report_text_v2": "1. Resumo\nEste relatório resume os achados principais do período.\n\n2. Análise\nA análise detalhada mostra crescimento de receita, revisada e mais curta.\n\n3. Riscos\nOs riscos identificados incluem churn e concorrência."
+  },
+  "artifacts": {
+    "screenshots": [
+      "run-3/s4.png"
+    ],
+    "console": "run-3/console.log"
+  },
+  "heals": []
+}

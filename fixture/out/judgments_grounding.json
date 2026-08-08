@@ -32,7 +32,7 @@
         {
           "claim": "A receita de 2025 ultrapassou R$ 40 milhões, um recorde para o setor.",
           "quote": "A receita de 2025 ultrapassou R$ 40 milhões, um recorde para o setor.",
-          "reason": "As fontes indicam que a receita de 2025 foi de R$ 12 milhões, muito abaixo dos R$ 40 milhões mencionados."
+          "reason": "As fontes indicam que a receita de 2025 foi de R$ 12 milhões, não ultrapassando R$ 40 milhões."
         }
       ]
     },
@@ -52,7 +52,7 @@
         {
           "claim": "A empresa tem sede em Campinas, São Paulo, e conta atualmente com 200 funcionários distribuídos entre engenharia e vendas.",
           "quote": "A empresa tem sede em Campinas, São Paulo, e conta atualmente com 200 funcionários distribuídos entre engenharia e vendas.",
-          "reason": "A sede está corretamente mencionada, mas o número de funcionários é diferente (45 em vez de 200) e não há menção à distribuição entre engenharia e vendas."
+          "reason": "O número de funcionários (200) e a distribuição entre engenharia e vendas não estão presentes nos dados fornecidos."
         }
       ]
     },

@@ -59,7 +59,7 @@ def main(argv=None) -> int:
     for cid, s in sorted(summaries.items()):
         print(f"  {cid}: {s.passes}/{s.n} ({s.pass_rate:.1%})")
     if regressions:
-        print(f"⚠️  Regressions vs. baseline: {regressions}")
+        print(f"  Regressions vs. baseline: {regressions}")
     print(f"Report: {os.path.join(args.out_dir, 'report.html')}")
 
     return 1 if regressions else 0

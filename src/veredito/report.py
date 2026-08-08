@@ -17,7 +17,7 @@ def render_report_html(
     rows = []
     for cid, s in sorted(summaries.items()):
         diff = baseline_diff.get(cid, {})
-        regression_flag = "⚠️ regression" if diff.get("regression") else ""
+        regression_flag = " regression" if diff.get("regression") else ""
         delta_txt = f"{diff['delta']:+.1%}" if diff.get("delta") is not None else "—"
         status_class = "ok" if s.pass_rate == 1.0 else ("warn" if s.pass_rate >= 0.8 else "fail")
         rows.append(

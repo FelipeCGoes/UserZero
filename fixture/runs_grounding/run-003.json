@@ -1,0 +1,34 @@
+{
+  "run": 3,
+  "status": "ok",
+  "steps": [
+    {
+      "id": "s1",
+      "ok": true,
+      "t_start_ms": 1754640000000,
+      "t_end_ms": 1754640000100
+    },
+    {
+      "id": "s3",
+      "ok": true,
+      "t_start_ms": 1754640000100,
+      "t_end_ms": 1754640000150
+    },
+    {
+      "id": "s4",
+      "ok": true,
+      "t_start_ms": 1754640000150,
+      "t_end_ms": 1754640002150
+    }
+  ],
+  "captures": {
+    "report_text": "A Aurora Tech foi fundada em 2019. A empresa tem sede em Campinas, São Paulo, e conta atualmente com 200 funcionários distribuídos entre engenharia e vendas."
+  },
+  "artifacts": {
+    "screenshots": [
+      "run-3/s4.png"
+    ],
+    "console": "run-3/console.log"
+  },
+  "heals": []
+}

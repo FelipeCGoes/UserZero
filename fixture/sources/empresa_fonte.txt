@@ -1,0 +1,7 @@
+Ficha da empresa Aurora Tech (documento-fonte fictício para teste de grounding)
+
+A Aurora Tech foi fundada em 2019.
+A sede fica em Campinas, São Paulo.
+Em 2025 a empresa registrou receita de R$ 12 milhões.
+A equipe tem 45 funcionários.
+O produto principal é uma plataforma de gestão de estoque para varejo.

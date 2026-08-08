@@ -14,6 +14,8 @@ dependencies = [
     "langchain-openai",
     "langchain",
     "langchain-mcp-adapters",
+    "langdetect>=1.0.9",
+    "pydantic>=2",
 ]
 
 [tool.setuptools.packages.find]

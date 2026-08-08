@@ -1,1 +1,11 @@
 -e .
+playwright
+pyyaml
+python-dotenv
+openai
+langchain-openai
+langchain
+langchain-mcp-adapters
+##mudanca judge
+langdetect>=1.0.9
+pydantic>=2

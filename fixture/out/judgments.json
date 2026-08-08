@@ -1,0 +1,665 @@
+[
+  {
+    "run": 1,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 1,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 193,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 1,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 2.05,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 1,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        2
+      ],
+      "unexpected_changes": [],
+      "diffs": [
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 2,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 2,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 193,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 2,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 2.25,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 2,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        2
+      ],
+      "unexpected_changes": [],
+      "diffs": [
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 3,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 3,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 193,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 3,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 1.85,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 3,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        2
+      ],
+      "unexpected_changes": [],
+      "diffs": [
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 4,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 4,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 193,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 4,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 2.15,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 4,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        2
+      ],
+      "unexpected_changes": [],
+      "diffs": [
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 5,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 5,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 193,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 5,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 1.95,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 5,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        2
+      ],
+      "unexpected_changes": [],
+      "diffs": [
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 6,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 6,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 193,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 6,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 9.05,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 6,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        2
+      ],
+      "unexpected_changes": [],
+      "diffs": [
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 7,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": false,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "en",
+      "confidence": 1.0,
+      "candidates": [
+        "en:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 7,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": false,
+    "evidence": {
+      "target": "report_text",
+      "problems": [
+        "seções ausentes: ['Resumo', 'Análise', 'Riscos']"
+      ],
+      "chars": 162,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 7,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 2.05,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 7,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": false,
+      "changed_sections": [],
+      "unexpected_changes": [],
+      "diffs": []
+    },
+    "error": null
+  },
+  {
+    "run": 8,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 8,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 193,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 8,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 2.05,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 8,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": false,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        1,
+        2
+      ],
+      "unexpected_changes": [
+        1
+      ],
+      "diffs": [
+        {
+          "section": 1,
+          "title": "Resumo",
+          "before_hash": "c8b379818f4f",
+          "after_hash": "a9abe9d845fb"
+        },
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 9,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "expect": "pt-BR",
+      "detected": "pt",
+      "confidence": 1.0,
+      "candidates": [
+        "pt:1.0"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 9,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": true,
+    "evidence": {
+      "target": "report_text",
+      "problems": [],
+      "chars": 173,
+      "sections_checked": [
+        "Resumo",
+        "Análise",
+        "Riscos"
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 9,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": true,
+    "evidence": {
+      "from": "s3",
+      "to": "s4",
+      "latency_s": 2.05,
+      "p95_max_s": 5
+    },
+    "error": null
+  },
+  {
+    "run": 9,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": true,
+    "evidence": {
+      "allowed_section": 2,
+      "allowed_section_changed": true,
+      "changed_sections": [
+        2
+      ],
+      "unexpected_changes": [],
+      "diffs": [
+        {
+          "section": 2,
+          "title": "Análise",
+          "before_hash": "e834d4d36c50",
+          "after_hash": "1af63f6cdfc2"
+        }
+      ]
+    },
+    "error": null
+  },
+  {
+    "run": 10,
+    "contract_id": "language:report_text",
+    "type": "language",
+    "pass": false,
+    "evidence": {
+      "reason": "run status=error, não avaliado"
+    },
+    "error": null
+  },
+  {
+    "run": 10,
+    "contract_id": "format:report_text",
+    "type": "format",
+    "pass": false,
+    "evidence": {
+      "reason": "run status=error, não avaliado"
+    },
+    "error": null
+  },
+  {
+    "run": 10,
+    "contract_id": "latency:s3-s4",
+    "type": "latency",
+    "pass": false,
+    "evidence": {
+      "reason": "run status=error, não avaliado"
+    },
+    "error": null
+  },
+  {
+    "run": 10,
+    "contract_id": "change_scope:report_text",
+    "type": "change_scope",
+    "pass": false,
+    "evidence": {
+      "reason": "run status=error, não avaliado"
+    },
+    "error": null
+  }
+]

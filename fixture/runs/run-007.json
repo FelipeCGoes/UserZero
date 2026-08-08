@@ -1,0 +1,41 @@
+{
+  "run": 7,
+  "status": "ok",
+  "steps": [
+    {
+      "id": "s1",
+      "ok": true,
+      "t_start_ms": 1754640000000,
+      "t_end_ms": 1754640000100
+    },
+    {
+      "id": "s3",
+      "ok": true,
+      "t_start_ms": 1754640000100,
+      "t_end_ms": 1754640000150
+    },
+    {
+      "id": "s4",
+      "ok": true,
+      "t_start_ms": 1754640000150,
+      "t_end_ms": 1754640002150
+    },
+    {
+      "id": "s7",
+      "ok": true,
+      "t_start_ms": 1754640002200,
+      "t_end_ms": 1754640002400
+    }
+  ],
+  "captures": {
+    "report_text": "1. Summary\nThis report summarizes the key findings.\n\n2. Analysis\nDetailed analysis shows revenue growth.\n\n3. Risks\nIdentified risks include churn and competition.",
+    "report_text_v2": "1. Summary\nThis report summarizes the key findings.\n\n2. Analysis\nDetailed analysis shows revenue growth.\n\n3. Risks\nIdentified risks include churn and competition."
+  },
+  "artifacts": {
+    "screenshots": [
+      "run-7/s4.png"
+    ],
+    "console": "run-7/console.log"
+  },
+  "heals": []
+}

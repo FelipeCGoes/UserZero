@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>UserZero — Veredito</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 2rem; color: #1a1a1a; }
+h1 { margin-bottom: 0.2rem; }
+.subtitle { color: #666; margin-top: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0 2rem; }
+th, td { border: 1px solid #ddd; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.9rem; }
+th { background: #f4f4f4; }
+tr.ok { background: #f0fff4; }
+tr.warn { background: #fffaf0; }
+tr.fail { background: #fff5f5; }
+code { font-size: 0.8rem; background: #f4f4f4; padding: 0.1rem 0.3rem; }
+</style>
+</head>
+<body>
+<h1>UserZero — Veredito</h1>
+<p class="subtitle">Gerado em 2026-08-08T16:48:18.164468+00:00</p>
+
+<h2>Pass-rate por contrato</h2>
+<table>
+<tr><th>Contrato</th><th>Tipo</th><th>Passes</th><th>Pass-rate</th><th>IC 95% (Wilson)</th><th>Δ vs. baseline</th></tr>
+<tr class='warn'><td>change_scope:report_text</td><td>change_scope</td><td>8/10</td><td>80.0%</td><td>[49.0%, 94.3%]</td><td>— </td></tr><tr class='warn'><td>format:report_text</td><td>format</td><td>8/10</td><td>80.0%</td><td>[49.0%, 94.3%]</td><td>— </td></tr><tr class='warn'><td>language:report_text</td><td>language</td><td>8/10</td><td>80.0%</td><td>[49.0%, 94.3%]</td><td>— </td></tr><tr class='warn'><td>latency:s3-s4</td><td>latency</td><td>9/10</td><td>90.0%</td><td>[59.6%, 98.2%]</td><td>— </td></tr>
+</table>
+
+<h2>Latência por fase declarada</h2>
+<table>
+<tr><th>Contrato</th><th>min (s)</th><th>p50 (s)</th><th>p95 (s)</th><th>max (s)</th><th>limite p95 (s)</th><th></th></tr>
+<tr><td>latency:s3-s4</td><td>1.85</td><td>2.05</td><td>6.33</td><td>9.05</td><td>5</td><td>⚠️ p95 violado</td></tr>
+</table>
+
+<h2>Piores exemplos por contrato reprovado</h2>
+<h4>change_scope:report_text</h4><ul><li>run 8: <code>{"allowed_section": 2, "allowed_section_changed": true, "changed_sections": [1, 2], "unexpected_changes": [1], "diffs": [{"section": 1, "title": "Resumo", "before_hash": "c8b379818f4f", "after_hash": "a9abe9d845fb"}, {"section": 2, "title": "Análise", "before_hash": "e834d4d36c50", "after_hash": "1af63f6cdfc2"}]}</code></li><li>run 10: <code>{"reason": "run status=error, não avaliado"}</code></li></ul><h4>format:report_text</h4><ul><li>run 7: <code>{"target": "report_text", "problems": ["seções ausentes: ['Resumo', 'Análise', 'Riscos']"], "chars": 162, "sections_checked": ["Resumo", "Análise", "Riscos"]}</code></li><li>run 10: <code>{"reason": "run status=error, não avaliado"}</code></li></ul><h4>language:report_text</h4><ul><li>run 7: <code>{"target": "report_text", "expect": "pt-BR", "detected": "en", "confidence": 1.0, "candidates": ["en:1.0"]}</code></li><li>run 10: <code>{"reason": "run status=error, não avaliado"}</code></li></ul><h4>latency:s3-s4</h4><ul><li>run 10: <code>{"reason": "run status=error, não avaliado"}</code></li></ul>
+
+</body>
+</html>

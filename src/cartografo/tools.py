@@ -1,8 +1,9 @@
 from langchain_core.tools import tool
 
-from cartografo.budget import Budget
 from cartografo.graph_store import GraphBuilder
-from cartografo.snapshot_capture import SnapshotCapture
+from common.budget import Budget
+from common.mcp_client import SCREENSHOTS_SUBDIR
+from common.snapshot_capture import SnapshotCapture
 
 
 def build_recording_tools(graph: GraphBuilder, snapshot: SnapshotCapture, budget: Budget) -> list:
@@ -16,15 +17,17 @@ def build_recording_tools(graph: GraphBuilder, snapshot: SnapshotCapture, budget
         this, so the node is fingerprinted from what the browser is showing right now.
         `node_id` should be short and slug-like (e.g. "reports", "report-view").
         `screenshot` is the filename you passed to browser_take_screenshot for this
-        page, if you took one."""
+        page, if you took one (just the filename — where it's saved is handled for you)."""
         if not snapshot.text:
             return "No snapshot captured yet — call browser_snapshot (or navigate/click) before record_node."
 
-        actual_id, is_new = graph.record_node(node_id, url, title, snapshot.text, screenshot)
+        screenshot_path = f"{SCREENSHOTS_SUBDIR}/{screenshot}" if screenshot else None
+        actual_id, is_new = graph.record_node(node_id, url, title, snapshot.text, screenshot_path)
         outcome = f"recorded new node '{actual_id}'" if is_new else (
             f"'{node_id}' matches an already-recorded state — reusing existing node '{actual_id}' instead of duplicating it"
         )
-        warning = budget.status(len(graph.nodes))
+        reason = budget.status(len(graph.nodes))
+        warning = f"Budget reached: {reason}. Stop exploring now and write map.md." if reason else None
         return outcome + (f"\n{warning}" if warning else "")
 
     @tool

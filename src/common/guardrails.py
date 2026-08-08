@@ -42,7 +42,7 @@ def make_blocklist_interceptor(extra_patterns: list[str] | None = None, whitelis
                     content=[TextContent(
                         type="text",
                         text=(
-                            f"Blocked by Cartógrafo guardrail: '{request.name}' targeting "
+                            f"Blocked by guardrail: '{request.name}' targeting "
                             f"{text!r} looks destructive/external and exploration is read-mostly. "
                             "Skip this action and continue mapping elsewhere."
                         ),

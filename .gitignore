@@ -7,3 +7,6 @@ venv/
 .venv/
 .pytest_cache/
 *.egg-info/
+
+# Pipeline run artifacts (graphs, screenshots, MCP logs)
+output/

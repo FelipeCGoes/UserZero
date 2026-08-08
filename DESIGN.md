@@ -2,13 +2,15 @@
 
 > Contexto técnico consolidado na véspera do Hack2L, como **arquitetura da solução** (preparação explicitamente permitida pelo regulamento). Nenhuma linha de código do projeto existe antes de 08/08; este arquivo é a fonte de contexto para o time e para o AI coder no dia. O design é genérico — nada aqui depende de um app-alvo específico.
 
+> **Atualização pós-kickoff:** o stack pivotou de TypeScript/Claude Agent SDK para **Python + LangChain + Featherless** (modelo servido através da abstração da lib `openai`, com as chaves da Featherless — ver `src/common/llm.py`). Cartógrafo e Compilador já estão implementados; as seções abaixo foram atualizadas para refletir decisões reais tomadas durante a implementação — o plano original de dry-run/confirmação, em particular, mudou de forma quando ficou claro que só o Compilador tem contexto (URL, credenciais, o texto do fluxo) para recompilar caso o usuário rejeite o fluxo.
+
 ## Visão em uma frase
 
 Plataforma de usuários sintéticos que verifica se produtos de IA cumprem **contratos de comportamento**: fluxos compilados executam N vezes, cada execução é julgada, e o veredito é estatístico, comparado a baseline, com evidência anexada.
 
 ## Princípios de engenharia
 
-Pipeline de arquivos inspecionáveis: cada componente lê um artefato e escreve outro; qualquer etapa re-executa isolada, e o time trabalha em paralelo contra artefatos escritos à mão. LLM em exatamente três pontos — Compilador (1× por fluxo), Healer (só em falha de passo), juízes semânticos (Haiku, estreitos) — e todo o resto é código determinístico. Uma execução que falha é dado, não retry silencioso.
+Pipeline de arquivos inspecionáveis: cada componente lê um artefato e escreve outro; qualquer etapa re-executa isolada, e o time trabalha em paralelo contra artefatos escritos à mão. LLM em exatamente três pontos — Compilador (1× por fluxo; inclui a execução agêntica e uma segunda chamada barata e não-agêntica para formalizar contratos a partir da descrição do usuário, ambas contam como "o ponto do Compilador"), Healer (só em falha de passo), juízes semânticos (estreitos) — e todo o resto é código determinístico. Uma execução que falha é dado, não retry silencioso.
 
 ## Pipeline de artefatos
 
@@ -22,9 +24,11 @@ Pipeline de arquivos inspecionáveis: cada componente lê um artefato e escreve 
 | Juízes (funções puras + Haiku) | `run-*.json` | `judgments.json` |
 | Veredito (determinístico) | `judgments.json` + `baseline.json` | `report.html` + novo baseline |
 
+O Compilador recebe, além da frase do fluxo, uma descrição opcional em linguagem natural do comportamento esperado (`--contracts` — vazia por padrão, nunca inventada). Entre Compilador e Executor-em-produção existe um passo de confirmação (`compile_and_confirm`, dono do loop, vive no Compilador — ver seção própria abaixo) que chama o Executor em dry-run para obter dados reais antes de aprovar.
+
 ## Setup inicial do app-alvo (Cartógrafo)
 
-Acontece uma vez por app (e incrementalmente depois). Inputs: `BASE_URL`, credenciais de **staging/conta de teste**, e opcionalmente uma instrução de foco ("mapeie os fluxos de relatório"). O agente (Claude + Playwright MCP) explora em largura com orçamento explícito — `max_states`, `max_depth`, `max_minutes` — registrando cada estado visitado e cada ação disponível, com screenshot por estado. **Guardrails:** a exploração é *read-mostly*; ações destrutivas ou com efeito externo (excluir, pagar, enviar e-mail/convite) ficam numa blocklist por padrão e só entram com whitelist explícita. Durante a exploração, o Cartógrafo **escuta o tráfego de rede** (network interception) para associar cada ação de UI à chamada de API subjacente — é essa associação que habilita o modo `api` (volume) mais tarde.
+Acontece uma vez por app (e incrementalmente depois). Inputs: `BASE_URL`, credenciais de **staging/conta de teste**, e opcionalmente uma instrução de foco ("mapeie os fluxos de relatório"). O agente (LangChain + Featherless + Playwright MCP) explora em largura com orçamento explícito — `max_states`, `max_depth`, `max_minutes` — registrando cada estado visitado e cada ação disponível, com screenshot por estado. **Guardrails:** a exploração é *read-mostly*; ações destrutivas ou com efeito externo (excluir, pagar, enviar e-mail/convite) ficam numa blocklist por padrão e só entram com whitelist explícita. Durante a exploração, o Cartógrafo **escuta o tráfego de rede** (network interception) para associar cada ação de UI à chamada de API subjacente — é essa associação que habilita o modo `api` (volume) mais tarde.
 
 Outputs:
 
@@ -46,9 +50,26 @@ Outputs:
 
 `map.md`: descrição da plataforma em linguagem natural (o que cada área faz, o vocabulário do produto) — é o que permite ao Compilador ancorar "gere um relatório a partir do PDF" nos nós certos. Re-mapeamentos posteriores diffam contra o grafo existente (base da seleção de testes por impacto — roadmap). **Versão do hackathon:** semi-guiada — o humano aponta os 2–3 fluxos e o agente mapeia só esse corredor; a exploração autônoma completa é o primeiro corte pré-decidido.
 
-## Setup de um teste (Compilador + dry-run)
+## Setup de um teste (Compilador + dry-run + confirmação)
 
-Usuário descreve o fluxo em linguagem natural. O Compilador ancora no grafo, executa uma vez agenticamente num browser real (a única execução cara, ~US$ 3–4) e emite o `spec.yaml`. O Executor roda o spec em dry-run (n=1, sem LLM, centavos) e produz o storyboard; na tela de aprovação, heurísticas determinísticas sobre os valores observados **propõem contratos** (idioma detectado → `language`; latência medida com margem → `latency`; seções parseadas → `format`; opcionalmente 1 chamada Haiku propõe semânticos, ex. `grounding` contra o arquivo subido no fluxo). O usuário aprova, ajusta limiares ou pede mudança de caminho — nesse caso o Compilador re-ancora só os passos afetados e dispara novo dry-run. Aprovado, o spec vira ativo. Aprova-se exatamente o artefato que rodará N vezes. Setup sempre em staging/conta de teste (duas execuções reais acontecem antes da aprovação).
+Usuário descreve o fluxo em linguagem natural e, opcionalmente, o comportamento esperado (`--contracts`, também em linguagem natural — vazio por padrão, nunca inventado pelo Compilador). O Compilador ancora no grafo (`graph.json`/`map.md` do Cartógrafo), executa o fluxo uma vez agenticamente num browser real (a única execução cara do setup, ~US$ 3–4 / ~700k tokens) e emite o `spec.yaml` com os `steps` compilados. Separadamente, uma chamada barata e não-agêntica (`derive_contracts`, sem browser) formaliza a descrição de contratos nos tipos do catálogo, vinculada apenas a capturas/steps que realmente existem no spec — se o usuário não descreveu comportamento nenhum, `contracts` fica vazio; a descrição também pode pedir grounding contra conteúdo que o próprio fluxo digitou (ex. o texto de um documento que ele mesmo cadastrou), mas nunca contra um documento pré-existente que o fluxo só selecionou sem nunca ler.
+
+Em seguida, `compile_and_confirm` (dono do loop; vive no Compilador, não no Executor) chama o Executor em dry-run (n=1, sem LLM, centavos) para obter o storyboard real, e conduz a confirmação em duas perguntas, **fluxo primeiro, contratos depois** — nessa ordem porque contratos são vinculados ao fluxo: rejeitar o fluxo invalidaria qualquer contrato já derivado dele, então não faz sentido confirmar contratos antes:
+
+1. **Fluxo:** mostra os steps compilados + o resultado real observado no dry-run (passo a passo, capturas, screenshots). Se o usuário rejeitar, o Compilador **recompila do zero com o feedback anexado** ao invés de um agente de reparo dedicado — mais simples de manter, mas com o mesmo custo da compilação original, não é um patch barato — e o ciclo (compilar → dry-run → confirmar) se repete.
+2. **Contratos:** só chega aqui se o fluxo foi aprovado. Mostra os contratos declarados mais uma linha `"sugestões automáticas: em breve"` (heurísticas sobre valores observados no dry-run — idioma detectado, timing real, seções encontradas — ficam para depois de existirem Juízes para consumi-las; não fazem parte do v0). Se o usuário rejeitar, dispara só um novo `derive_contracts` com o feedback anexado — chamada barata, sem browser, sem recompilar o fluxo.
+
+Aprovados os dois, o spec vira o artefato ativo — exatamente o que o Executor roda N vezes depois. Setup sempre em staging/conta de teste.
+
+## Orquestração e os três pontos de entrada
+
+Três CLIs, mesma lógica reaproveitada, sem duplicar o loop de confirmação:
+
+- **`compilador`** sozinho: compila, roda `compile_and_confirm`, e ao final só imprime `Test case is ready under <path>`. Não avança para produção.
+- **`executor --compilador-dir X --mode dry|batch`** sozinho: aponta para um `spec.yaml` já existente e o executa (n=1 ou n=N) sem nenhuma UI de confirmação — confirmar é decisão de quem compila, não de quem executa; o Executor standalone só roda o que já existe e devolve dados estruturados.
+- **`userzero`** (orquestrador): chama `compilador.compile_and_confirm`; aprovado, imprime `---EXECUTOR STEP---` e roda o Executor em produção (n=N, mesmo console); ao chegar nos Juízes (não construídos ainda), imprime `JUDGES BEING IMPLEMENTED` e para.
+
+O Executor não sabe nada sobre Compilador nem sobre a UI de confirmação — é 100% determinístico e plain Playwright (`playwright.async_api`), não o Playwright MCP que Cartógrafo/Compilador usam (MCP é para um LLM dirigir o browser via tool calls; sem LLM no loop, o Executor fala com o Playwright direto, sem subprocess, sem interceptors). Sem Healer construído ainda, qualquer falha de passo marca o run como `blocked` de imediato (`heals: []` sempre vazio por ora).
 
 ## Schema do spec (exemplo genérico: gerador de relatório qualquer)
 
@@ -94,6 +115,8 @@ Regras do schema: todo passo é timestampado automaticamente pelo Executor, ent�
 
 Loop `1..N` com concorrência via p-limit; um browser, N `browserContexts`; bloquear imagens/fontes por route interception nos contexts de carga; headless; nunca lançar exceção por falha de run — registrar status com evidência e seguir o batch. Em `wait_for` com `latency: true`, registrar também o tempo até o primeiro conteúdo quando o alvo faz streaming. Modo `api` reusa o mesmo spec quando os passos têm endpoint mapeado no grafo. Gravação dupla por execução em modo fidelidade: `recordVideo` no contexto (`.webm`) + `tracing.start`/`stop` (`trace.zip`, replayável no Trace Viewer). Em modo carga, gravação por amostragem (2–3 contexts de N) ou desligada, com latência medida apenas nos contexts sem gravação — encodar vídeo custa CPU por contexto e infla a métrica que se quer medir; trace leve (screenshots off) pode ficar ligado. Modo `api` não tem browser: a evidência é o body capturado. Todo tráfego sintético carimbado — header `X-UserZero-Synthetic: 1` + sufixo identificável no user-agent — com filtro de exclusão documentado para o analytics do cliente (PostHog e afins) não ser contaminado por usuários que não existem.
 
+Dry-run e produção compartilham exatamente o mesmo runner (`play_spec`, um passo do spec por vez contra uma página real) — a diferença é só `n=1` vs `n=N` e o que a chamada faz com o resultado (storyboard para a confirmação do Compilador vs. arquivo `run-NNN.json` para os Juízes).
+
 ## Healer — contrato de comportamento
 
 Dispara em seletor não encontrado ou timeout de *ação* (não de geração). Recebe o passo falho (com `goal`), o snapshot de acessibilidade da página e o nó do grafo; devolve o seletor corrigido. O Executor tenta de novo; no sucesso, patcheia spec e grafo e registra o episódio em `heals[]`; após K=2 falhas, marca o run como `blocked` com evidência e o batch continua. Episódios de cura são a semente do flywheel de dados.
@@ -104,7 +127,7 @@ Assinatura única: `judge(run, params) → { pass: boolean, evidence: string | o
 
 Determinísticos (construir amanhã): `language` (detector, ex. tinyld), `format` (parse de seções/JSON + placeholders + truncamento), `latency` (aritmética sobre timestamps `from`/`to`), `change_scope` (split por seção + hash + diff — verifica que só a seção permitida mudou).
 
-Semânticos (amanhã se der: `grounding`; roadmap: `rubric`): chamada Haiku 4.5 com output estruturado, **um modo de falha por juiz**. `grounding` recebe claims extraídas da captura + chunks das fontes e devolve claims não suportadas, com citação. `rubric(criterion)` é template fixo parametrizado por um critério em texto; a origem futura do parâmetro é a mineração dos pares gerado→aprovado do cliente (camada 2 — **não construir amanhã**; é slide).
+Semânticos (amanhã se der: `grounding`; roadmap: `rubric`): chamada a um modelo leve via Featherless (`get_llm()`, mesmo client de todo o resto do pipeline) com output estruturado, **um modo de falha por juiz**. `grounding` recebe claims extraídas da captura + chunks das fontes e devolve claims não suportadas, com citação. `rubric(criterion)` é template fixo parametrizado por um critério em texto; a origem futura do parâmetro é a mineração dos pares gerado→aprovado do cliente (camada 2 — **não construir amanhã**; é slide).
 
 ## Veredito
 
@@ -116,11 +139,11 @@ O Executor grava tudo em área de staging; a decisão de retenção acontece **d
 
 ## Decisões fechadas e armadilhas conhecidas
 
-`retries=0` — run falho é dado. Rate limit (429) do alvo sob carga é achado do produto, não bug da demo: capturar a curva e apresentar. Em container: `--no-sandbox --disable-dev-shm-usage`; nunca herdar lockfile de outra plataforma na imagem (remover e reinstalar). Em fan-out na nuvem: `return_exceptions=true` para um worker morto não abortar o batch. Onda canário (n=3) antes de qualquer carga cheia. Custo: ~98% do custo agêntico é API de LLM — por isso o agente fica fora do loop de execução; juízes em Haiku, agentes em Sonnet.
+`retries=0` — run falho é dado. Rate limit (429) do alvo sob carga é achado do produto, não bug da demo: capturar a curva e apresentar. Em container: `--no-sandbox --disable-dev-shm-usage`; nunca herdar lockfile de outra plataforma na imagem (remover e reinstalar). Em fan-out na nuvem: `return_exceptions=true` para um worker morto não abortar o batch. Onda canário (n=3) antes de qualquer carga cheia. Custo: ~98% do custo agêntico é API de LLM — por isso o agente fica fora do loop de execução; juízes num modelo leve, agentes no modelo configurado via `MODEL`/Featherless (mesmo `get_llm()` para os dois — a diferença de custo é o número de chamadas, não o provider).
 
 ## Stack e papéis
 
-Monorepo TypeScript. Agentes (Cartógrafo, Compilador, Healer): Claude Agent SDK + Playwright MCP. Runner: Playwright puro. Juízes: LangChain.js com `withStructuredOutput` + Haiku 4.5. O próprio UserZero instrumentado com Langfuse (`langfuse-langchain` CallbackHandler) desde a primeira hora. Persistência: arquivos JSON (SQLite só se sobrar tempo). Report: HTML estático. Estágio B opcional (timebox 14h–14h45): Modal com um container por usuário sintético e alvo local exposto via cloudflared tunnel.
+**Stack real** (pivotado do plano original em TypeScript/Claude Agent SDK): monorepo Python (`src/`, com `pyproject.toml` — `pip install -e .` deixa `cartografo`/`compilador` importáveis e com entry point de CLI, sem precisar de `PYTHONPATH`). Agentes (Cartógrafo, Compilador): LangChain (`langchain.agents.create_agent`, um agente ReAct por módulo) + Playwright MCP via `langchain-mcp-adapters`. LLM: Featherless, servido pela abstração da lib `openai` através do `ChatOpenAI` do `langchain-openai` — único ponto de instanciação em `src/common/llm.py::get_llm()`, compartilhado por todo agente e pela extração de contratos. Infra compartilhada em `src/common/`: `llm.py`, `agent_logging.py` (streaming + transcript), `mcp_client.py`/`guardrails.py`/`snapshot_capture.py` (sessão MCP + blocklist de ações destrutivas + captura de snapshot, usados por Cartógrafo e Compilador), `budget.py` (limite genérico de contagem+tempo). Runner do Executor: Playwright puro (`playwright.async_api`), sem LLM, sem MCP. Juízes: catálogo ainda não implementado (roadmap imediato após o Executor — determinísticos primeiro). Persistência: arquivos JSON/YAML (`graph.json`, `spec.yaml`, `run-*.json`) — sem banco. O próprio UserZero instrumentado com Langfuse (`langfuse-langchain` CallbackHandler) desde a primeira hora. Report: HTML estático. Estágio B opcional (timebox 14h–14h45): Modal com um container por usuário sintético e alvo local exposto via cloudflared tunnel.
 
 Papéis: quem domina browser fica com tudo que toca Playwright (esqueleto do runner primeiro, depois Cartógrafo e Healer); perfil LangChain A fica com juízes + agregação estatística; perfil LangChain B fica com report + instrumentação Langfuse + agente PRD→fluxos (trilha Vindler); quarta pessoa, se houver, é dona do Modal + vídeo/deck.
 

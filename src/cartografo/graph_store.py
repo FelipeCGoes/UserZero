@@ -21,6 +21,7 @@ class GraphBuilder:
         self.nodes: dict[str, dict] = {}
         self._fingerprint_to_id: dict[str, str] = {}
         self.edges: list[dict] = []
+        self._edge_index: dict[tuple, int] = {}
 
     def record_node(self, node_id: str, url: str, title: str, structural_text: str,
                      screenshot: str | None = None) -> tuple[str, bool]:
@@ -43,15 +44,24 @@ class GraphBuilder:
 
     def record_edge(self, from_id: str, to_id: str, action: str, selector: str,
                      label: str, api_method: str | None = None, api_path: str | None = None) -> str:
-        edge = {
-            "from": from_id,
-            "to": to_id,
-            "action": action,
-            "selector": selector,
-            "label": label,
-        }
-        if api_method and api_path:
-            edge["api"] = {"method": api_method, "path": api_path}
+        """Same (from, to, action, selector) recorded twice — e.g. once before and
+        once after checking browser_network_requests for API info — merges into the
+        existing edge instead of appending a duplicate. This is the edge-level
+        analogue of record_node's fingerprint dedup."""
+        key = (from_id, to_id, action, selector)
+        api = {"method": api_method, "path": api_path} if (api_method and api_path) else None
+
+        existing_index = self._edge_index.get(key)
+        if existing_index is not None:
+            existing = self.edges[existing_index]
+            if api and "api" not in existing:
+                existing["api"] = api
+            return f"already recorded as an edge between '{from_id}' and '{to_id}' — merged, no duplicate added"
+
+        edge = {"from": from_id, "to": to_id, "action": action, "selector": selector, "label": label}
+        if api:
+            edge["api"] = api
+        self._edge_index[key] = len(self.edges)
         self.edges.append(edge)
 
         warnings = []

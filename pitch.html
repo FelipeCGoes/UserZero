@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UserZero — Pitch Deck</title>
+<style>
+  :root {
+    --bg: #eef0f5;
+    --surface: #ffffff;
+    --surface-2: #e4e7ee;
+    --ink: #12141c;
+    --ink-muted: #565d6d;
+    --ink-faint: #8a93a6;
+    --line: rgba(18, 20, 28, 0.12);
+    --accent: #5b4fe0;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(91, 79, 224, 0.12);
+    --amber: #b8660f;
+    --amber-soft: rgba(184, 102, 15, 0.12);
+    --good: #1e9e6b;
+    --bad: #c8392f;
+    --bar-a: #c9c4f7;
+    --bar-b: #5b4fe0;
+    --mono: ui-monospace, "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b0e14;
+      --surface: #12151e;
+      --surface-2: #181c27;
+      --ink: #e9ebf2;
+      --ink-muted: #8a93a6;
+      --ink-faint: #5c6478;
+      --line: rgba(233, 235, 242, 0.1);
+      --accent: #8b7fff;
+      --accent-ink: #0b0e14;
+      --accent-soft: rgba(139, 127, 255, 0.14);
+      --amber: #ffb86b;
+      --amber-soft: rgba(255, 184, 107, 0.14);
+      --good: #4ade9c;
+      --bad: #ff6b6b;
+      --bar-a: #2c2a52;
+      --bar-b: #8b7fff;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0b0e14;
+    --surface: #12151e;
+    --surface-2: #181c27;
+    --ink: #e9ebf2;
+    --ink-muted: #8a93a6;
+    --ink-faint: #5c6478;
+    --line: rgba(233, 235, 242, 0.1);
+    --accent: #8b7fff;
+    --accent-ink: #0b0e14;
+    --accent-soft: rgba(139, 127, 255, 0.14);
+    --amber: #ffb86b;
+    --amber-soft: rgba(255, 184, 107, 0.14);
+    --good: #4ade9c;
+    --bad: #ff6b6b;
+    --bar-a: #2c2a52;
+    --bar-b: #8b7fff;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 44px 44px;
+    background-position: -1px -1px;
+  }
+
+  .deck {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .slide {
+    height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(28px, 5vw, 88px) clamp(28px, 7vw, 120px);
+    position: relative;
+  }
+
+  .slide-inner {
+    max-width: 1180px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 2px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  h1, h2 {
+    font-family: var(--mono);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  h2 { font-size: clamp(30px, 4vw, 50px); line-height: 1.1; }
+
+  p { line-height: 1.55; }
+
+  .lede {
+    font-size: clamp(16px, 1.3vw, 19px);
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin-top: 18px;
+  }
+
+  .footer-tag {
+    position: absolute;
+    bottom: 28px;
+    left: clamp(28px, 7vw, 120px);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+
+  /* NAV */
+  .navdots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+  }
+  .navdots button {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--ink-faint);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s, transform 0.2s, border-color .2s;
+  }
+  .navdots button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.3);
+  }
+  .counter {
+    position: fixed;
+    bottom: 20px;
+    right: 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    z-index: 20;
+    tabular-nums: on;
+    font-variant-numeric: tabular-nums;
+  }
+  .progressbar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--accent);
+    z-index: 21;
+    transition: width .3s ease;
+  }
+
+  /* COVER */
+  .cover h1 {
+    font-size: clamp(56px, 10vw, 128px);
+    line-height: 0.95;
+  }
+  .cover .quote {
+    margin-top: 34px;
+    font-family: var(--sans);
+    font-style: italic;
+    font-size: clamp(18px, 1.6vw, 23px);
+    color: var(--ink-muted);
+    border-left: 3px solid var(--accent);
+    padding-left: 18px;
+    max-width: 56ch;
+  }
+  .cover .sub {
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: clamp(14px, 1.3vw, 17px);
+    color: var(--accent);
+  }
+
+  /* PROBLEM slide */
+  .twocol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .card .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--bad);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .card h3 {
+    margin: 0 0 8px 0;
+    font-size: 19px;
+    font-family: var(--sans);
+  }
+  .card p { margin: 0; color: var(--ink-muted); font-size: 14.5px; }
+
+  .statrow {
+    margin-top: 22px;
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 22px;
+  }
+  .statrow .txt { color: var(--ink); font-size: 15px; max-width: 56ch; }
+  .statrow .txt-solo { max-width: 70ch; font-size: 16px; }
+  .statrow .txt-solo strong { color: var(--accent); }
+
+  /* QUADRANT (differentiator) */
+  .quad-wrap {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 216px 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 16px;
+    align-items: stretch;
+  }
+  .qcard {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .qcard:nth-of-type(1) { grid-column: 1; grid-row: 1; }
+  .qcard:nth-of-type(2) { grid-column: 3; grid-row: 1; }
+  .qcard:nth-of-type(3) { grid-column: 1; grid-row: 2; }
+  .qcard:nth-of-type(4) { grid-column: 3; grid-row: 2; }
+  .qcard .q-name { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .05em; }
+  .qcard .q-players { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+  .qcard .q-answers { font-size: 14px; margin-top: 8px; color: var(--ink); }
+  .qcard .q-gap { font-size: 12.5px; color: var(--bad); margin-top: 8px; font-style: italic; }
+
+  .center-badge {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    justify-self: center;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-radius: 12px;
+    padding: 16px 18px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    z-index: 5;
+  }
+  .center-badge .cb-name { font-family: var(--mono); font-weight: 800; font-size: 16px; }
+  .center-badge .cb-line { font-size: 11.5px; margin-top: 6px; opacity: 0.92; line-height: 1.4; }
+
+  /* MARKET slide */
+  .market-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    margin-top: 26px;
+    align-items: start;
+  }
+  .chart-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 26px 18px;
+  }
+  .chart-title { font-family: var(--mono); font-size: 12px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 18px; }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 46px;
+    padding-left: 6px;
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 90px; }
+  .bar-val { font-family: var(--mono); font-weight: 700; font-size: 18px; color: var(--ink); }
+  .bar-track { height: 190px; display: flex; align-items: flex-end; }
+  .bar {
+    width: 56px;
+    border-radius: 5px 5px 2px 2px;
+  }
+  .bar-a-fill { background: var(--bar-a); height: 62px; }
+  .bar-b-fill { background: var(--bar-b); height: 190px; }
+  .bar-label { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
+  .cagr-badge {
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--good);
+    background: rgba(30,158,107,0.12);
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+  .chart-footnote { font-size: 11.5px; color: var(--ink-faint); margin-top: 14px; }
+
+  .whynow li { margin-bottom: 14px; font-size: 14.5px; color: var(--ink-muted); line-height: 1.5; }
+  .whynow { padding-left: 18px; margin: 0; }
+  .whynow strong { color: var(--ink); }
+
+  /* SOLUTION one-liner slide */
+  .oneliner {
+    font-family: var(--mono);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.25;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .oneliner .hl { color: var(--accent); }
+  .contract-tags {
+    margin-top: 34px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .contract-tags span {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 7px 13px;
+    border-radius: 20px;
+    color: var(--ink-muted);
+  }
+
+  /* PIPELINE slide */
+  .pipeline {
+    margin-top: 34px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .pstep {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 14px;
+    position: relative;
+  }
+  .pstep + .pstep { margin-left: 22px; }
+  .pstep + .pstep::before {
+    content: "→";
+    position: absolute;
+    left: -22px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--ink-faint);
+    font-family: var(--mono);
+  }
+  .pstep .pnum { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 700; }
+  .pstep h4 { font-family: var(--sans); font-size: 14.5px; margin: 6px 0 6px; }
+  .pstep p { font-size: 12px; color: var(--ink-muted); margin: 0; line-height: 1.4; }
+
+  .touchpoints {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .touch {
+    border: 1px dashed var(--amber);
+    background: var(--amber-soft);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .touch .tnum {
+    font-family: var(--mono);
+    font-weight: 800;
+    color: var(--amber);
+    font-size: 20px;
+  }
+  .touch .ttext strong { display: block; font-size: 14.5px; margin-bottom: 3px; }
+  .touch .ttext span { font-size: 13px; color: var(--ink-muted); }
+
+  .outcome-line {
+    margin-top: 20px;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .outcome-line .arrow { color: var(--accent); }
+
+  /* CLOSING */
+  .closing h2 { font-size: clamp(32px, 5vw, 58px); max-width: 16ch; }
+  .closing .lede { font-size: clamp(17px, 1.5vw, 21px); }
+  .closing .signoff {
+    margin-top: 40px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+    display: flex;
+    gap: 24px;
+  }
+
+  @media (max-width: 860px) {
+    .twocol, .market-grid, .touchpoints { grid-template-columns: 1fr; }
+    .quad-wrap { grid-template-columns: 1fr; grid-template-rows: none; }
+    .qcard:nth-of-type(1), .qcard:nth-of-type(2), .qcard:nth-of-type(3), .qcard:nth-of-type(4) { grid-column: auto; grid-row: auto; }
+    .center-badge { grid-column: auto; grid-row: auto; order: -1; margin: 0 0 4px; }
+    .pipeline { flex-direction: column; }
+    .pstep + .pstep { margin-left: 0; margin-top: 22px; }
+    .pstep + .pstep::before { content: "↓"; left: 50%; top: -22px; transform: translate(-50%,-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deck { scroll-behavior: auto; }
+    .navdots button, .progressbar { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progressbar" id="progressbar" style="width: 12.5%;"></div>
+<div class="navdots" id="navdots"></div>
+<div class="counter" id="counter">01 / 07</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. COVER -->
+  <section class="slide cover">
+    <div class="slide-inner">
+      <div class="eyebrow">Hack2L · AI Agents Hackathon · 08.08.2026</div>
+      <h1>UserZero</h1>
+      <div class="sub">Usuários sintéticos para produtos de IA.</div>
+      <div class="quote">"O primeiro usuário do seu produto não deveria ser um humano."</div>
+    </div>
+  </section>
+
+  <!-- 2. PROBLEM -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">O problema</div>
+      <h2>IA quebra as duas premissas do teste de software.</h2>
+      <div class="twocol">
+        <div class="card">
+          <div class="tag">Premissa 1, quebrada</div>
+          <h3>O output não é determinístico</h3>
+          <p>Cada execução varia. Assert de string não funciona — verificar um produto de IA exige julgamento, não igualdade exata.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Premissa 2, quebrada</div>
+          <h3>A carga não se mede em RPS</h3>
+          <p>Mede-se em tokens, rate limits, filas de inferência, custo por sessão e degradação de qualidade sob pressão.</p>
+        </div>
+      </div>
+      <div class="statrow">
+        <div class="txt txt-solo"><strong>Ninguém verifica isso sistematicamente.</strong> Formato, idioma, latência, escopo de mudança, grounding — nenhuma ferramenta de teste cobre esses contratos hoje. O humano descobre a falha depois do deploy.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. DIFFERENTIATOR -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">O diferencial</div>
+      <h2>Quatro camadas de qualidade para IA. Uma cadeira vazia.</h2>
+      <div class="quad-wrap">
+        <div class="qcard">
+          <div class="q-name">Observabilidade</div>
+          <div class="q-players">Langfuse, LangSmith, Sentry</div>
+          <div class="q-answers">"O que aconteceu em produção?"</div>
+          <div class="q-gap">Passiva — você ainda traz o driver.</div>
+        </div>
+        <div class="qcard">
+          <div class="q-name">Evals de componente</div>
+          <div class="q-players">Braintrust, Promptfoo, DeepEval</div>
+          <div class="q-answers">"Esse prompt melhorou no dataset?"</div>
+          <div class="q-gap">Isolado — não atravessa o produto real.</div>
+        </div>
+        <div class="qcard">
+          <div class="q-name">Simulação</div>
+          <div class="q-players">Coval, Hamming, Roark</div>
+          <div class="q-answers">"Como o agente conversa multi-turno?"</div>
+          <div class="q-gap">Pluga no endpoint — não na UI do produto.</div>
+        </div>
+        <div class="qcard">
+          <div class="q-name">E2E de UI</div>
+          <div class="q-players">Momentic, QA Wolf, Playwright Agents</div>
+          <div class="q-answers">Atravessa o produto de ponta a ponta.</div>
+          <div class="q-gap">Assert determinístico, execução única, zero noção de carga.</div>
+        </div>
+        <div class="center-badge">
+          <div class="cb-name">UserZero</div>
+          <div class="cb-line">Superfície real do produto + metodologia de simulação + veredito estatístico</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. MARKET -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Tamanho de mercado</div>
+      <h2>AI-powered testing &amp; QA: de US$12B a US$39,4B</h2>
+      <div class="market-grid">
+        <div class="chart-box">
+          <div class="chart-title">Mercado de AI-powered software testing / QA</div>
+          <div class="bars">
+            <div class="bar-col">
+              <div class="bar-val">US$12,0B</div>
+              <div class="bar-track"><div class="bar bar-a-fill"></div></div>
+              <div class="bar-label">2026</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-val">US$39,4B</div>
+              <div class="bar-track"><div class="bar bar-b-fill"></div></div>
+              <div class="bar-label">2031</div>
+            </div>
+          </div>
+          <div class="cagr-badge">↗ CAGR 26,9%</div>
+          <div class="chart-footnote">Contexto: automation testing (total) US$40,4B → US$78,9B, CAGR 14,3%.<br/>Fonte: Mordor Intelligence, 2026.</div>
+        </div>
+        <div>
+          <div class="chart-title" style="margin-top:2px;">Why now</div>
+          <ul class="whynow">
+            <li><strong>Gargalo de revisão.</strong> IA gera ~4x mais código do que os times conseguem revisar e testar.</li>
+            <li><strong>Agentes ganham "mãos".</strong> Protocolos de pagamento, e-mail e browser dão autonomia real a agentes — o custo de uma falha fica cada vez mais concreto.</li>
+            <li><strong>Capital migrando.</strong> Investimento pesado em infraestrutura de confiança para agentes (ex.: Bespoke Labs, US$40M só para ambientes de teste).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SOLUTION ONE-LINER -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">A solução</div>
+      <div class="oneliner">UserZero garante que produtos de IA <span class="hl">cumprem contratos de comportamento</span> — antes de qualquer humano usar.</div>
+      <p class="lede">Contratos, não gosto. Verificados estatisticamente, N execuções por vez, com evidência anexada — não uma opinião de LLM sobre o output.</p>
+      <div class="contract-tags">
+        <span>formato &amp; estrutura</span>
+        <span>idioma &amp; escrita</span>
+        <span>latência &amp; custo</span>
+        <span>escopo de mudança</span>
+        <span>grounding</span>
+        <span>interação</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. HOW IT WORKS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Como funciona</div>
+      <h2>O agente mapeia uma vez. O sistema executa sempre.</h2>
+      <div class="pipeline">
+        <div class="pstep"><div class="pnum">01</div><h4>Cartógrafo</h4><p>Explora o app e produz o grafo de navegação.</p></div>
+        <div class="pstep"><div class="pnum">02</div><h4>Compilador</h4><p>Ancora o fluxo no grafo e compila num spec.</p></div>
+        <div class="pstep"><div class="pnum">03</div><h4>Executor</h4><p>Roda o spec N vezes, sem LLM no loop.</p></div>
+        <div class="pstep"><div class="pnum">04</div><h4>Juízes</h4><p>Verificam cada execução contra os contratos.</p></div>
+        <div class="pstep"><div class="pnum">05</div><h4>Veredito</h4><p>Pass-rate com evidência: vídeo, trace, diff.</p></div>
+      </div>
+
+      <div class="touchpoints">
+        <div class="touch">
+          <div class="tnum">1</div>
+          <div class="ttext"><strong>Você descreve o fluxo</strong><span>Em linguagem natural — sem escrever seletor, sem script.</span></div>
+        </div>
+        <div class="touch">
+          <div class="tnum">2</div>
+          <div class="ttext"><strong>Você aprova o storyboard</strong><span>Screenshots do dry-run + contratos propostos a partir do que foi observado.</span></div>
+        </div>
+      </div>
+      <div class="outcome-line"><span class="arrow">→</span> Aprovado uma vez, roda milhares de vezes: em fidelidade (browser real) ou em volume (API).</div>
+    </div>
+  </section>
+
+  <!-- 7. CLOSING -->
+  <section class="slide closing">
+    <div class="slide-inner">
+      <div class="eyebrow">O endgame</div>
+      <h2>Nenhum usuário real deveria ser o primeiro a encontrar um bug.</h2>
+      <p class="lede">Todo release passa por uma população sintética antes de chegar a humanos. Esse é o significado do nome.</p>
+      <div class="signoff">
+        <span>USERZERO</span>
+        <span>HACK2L · AI AGENTS HACKATHON</span>
+        <span>08.08.2026</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const deck = document.getElementById('deck');
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const navdots = document.getElementById('navdots');
+  const counter = document.getElementById('counter');
+  const progressbar = document.getElementById('progressbar');
+
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.setAttribute('aria-label', 'Ir para slide ' + (i + 1));
+    b.addEventListener('click', () => slides[i].scrollIntoView({ behavior: 'smooth' }));
+    navdots.appendChild(b);
+  });
+  const dots = Array.from(navdots.children);
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function currentIndex() {
+    const mid = deck.scrollTop + deck.clientHeight / 2;
+    let idx = 0;
+    slides.forEach((s, i) => { if (s.offsetTop <= mid) idx = i; });
+    return idx;
+  }
+
+  function updateUI() {
+    const idx = currentIndex();
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    counter.textContent = pad(idx + 1) + ' / ' + pad(slides.length);
+    progressbar.style.width = ((idx + 1) / slides.length * 100) + '%';
+  }
+
+  deck.addEventListener('scroll', () => { window.requestAnimationFrame(updateUI); });
+
+  window.addEventListener('keydown', (e) => {
+    const idx = currentIndex();
+    if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) {
+      e.preventDefault();
+      if (idx < slides.length - 1) slides[idx + 1].scrollIntoView({ behavior: 'smooth' });
+    } else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
+      e.preventDefault();
+      if (idx > 0) slides[idx - 1].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'Home') {
+      slides[0].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'End') {
+      slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  updateUI();
+</script>
+
+</body>
+</html>

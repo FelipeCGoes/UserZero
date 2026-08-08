@@ -8,7 +8,11 @@ from executor.runner import play_spec
 
 
 async def run_dry(compilador_dir: Path, output_dir: Path, headless: bool = True) -> dict:
-    """Runs a compiled spec once for real (n=1, no LLM) and writes run-dry.json.
+    """Runs a compiled spec once for real (n=1, no LLM) and writes dry-run.json —
+    deliberately NOT named run-*.json: Judges' batch loader (judges/runner.py)
+    globs run-*.json to enumerate production runs, and dry-run output lives in the
+    same executor/ folder batch writes into. A dry-run sample must never be silently
+    counted as one of the N production runs.
     Returns {"spec": ..., "run": ..., "run_path": ...} — plain data, no printing, no
     confirmation UI. Confirming with a human is the caller's job (compilador owns
     that loop), not this function's."""
@@ -26,6 +30,6 @@ async def run_dry(compilador_dir: Path, output_dir: Path, headless: bool = True)
             await browser.close()
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    run_path = output_dir / "run-dry.json"
+    run_path = output_dir / "dry-run.json"
     run_path.write_text(json.dumps(run, indent=2, ensure_ascii=False), encoding="utf-8")
     return {"spec": spec, "run": run, "run_path": run_path}

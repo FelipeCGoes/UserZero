@@ -39,7 +39,7 @@ def print_dry_result(result: dict) -> None:
     else:
         print("(none declared)")
 
-    print(f"\nrun-dry.json -> {result['run_path']}")
+    print(f"\ndry-run.json -> {result['run_path']}")
 
 
 def print_batch_result(runs: list[dict], output_dir: Path) -> None:

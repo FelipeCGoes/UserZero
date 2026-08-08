@@ -13,7 +13,7 @@ from common.budget import Budget
 from common.llm import get_llm
 from common.mcp_client import playwright_mcp_tools
 from compilador.agent import build_agent
-from compilador.contracts import derive_contracts
+from compilador.contracts import derive_and_materialize_contracts
 from compilador.review import ask_yes_no_with_feedback, print_contracts, print_flow_and_dry_run
 from compilador.spec_store import SpecBuilder
 from compilador.tools import build_recording_tools
@@ -137,7 +137,7 @@ async def run(args, print_summary: bool = True) -> Path:
     # graph.write()-always-runs discipline) — a bug in this step must degrade to "no
     # contracts", never lose an already-completed, expensive agentic run.
     try:
-        spec.contracts = derive_contracts(llm, args.contracts, spec.steps)
+        spec.contracts = derive_and_materialize_contracts(llm, args.contracts, spec.steps, output_dir)
     except Exception as exc:  # noqa: BLE001 — last line of defense before losing recorded steps
         print(f"WARNING: contract derivation failed unexpectedly ({type(exc).__name__}: {exc}) "
               "— continuing with no contracts.")
@@ -165,6 +165,7 @@ async def compile_and_confirm(args) -> Path:
     is confirmed first specifically so a contracts-only retry never has to
     re-question a flow that's already been signed off.
     """
+    load_dotenv()
     llm = get_llm()
     original_flow = args.flow
     original_contracts = args.contracts
@@ -190,7 +191,7 @@ async def compile_and_confirm(args) -> Path:
         if approved:
             break
         contracts_description = f"{contracts_description}\n\nFeedback: {feedback}" if contracts_description else feedback
-        spec["contracts"] = derive_contracts(llm, contracts_description, spec["steps"])
+        spec["contracts"] = derive_and_materialize_contracts(llm, contracts_description, spec["steps"], output_dir)
         spec_path.write_text(yaml.safe_dump(spec, sort_keys=False, allow_unicode=True), encoding="utf-8")
 
     return spec_path

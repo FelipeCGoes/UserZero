@@ -1,3 +1,5 @@
+from pathlib import Path
+
 CONTRACT_SCHEMA = {
     "title": "ContractList",
     "description": "Contracts to attach to a compiled flow spec, per DESIGN.md's catalog.",
@@ -22,7 +24,7 @@ CONTRACT_SCHEMA = {
                     "sources": {"type": "array", "items": {"type": "string"}, "description": "What every claim must trace back to (grounding contracts): either a fixture file path, or the id of a step whose own `value` IS the source content (e.g. text the flow typed into an upload form). Omit entirely if the flow never observed the actual source content — never invent a path."},
                     "before": {"type": "string", "description": "Capture name before the edit (change_scope contracts)."},
                     "after": {"type": "string", "description": "Capture name after the edit (change_scope contracts)."},
-                    "allowed_section": {"type": "string", "description": "The only section allowed to differ between before/after (change_scope contracts)."},
+                    "allowed_section": {"type": "integer", "description": "The only section (1-indexed) allowed to differ between before/after (change_scope contracts)."},
                 },
                 "required": ["type"],
             },
@@ -126,3 +128,45 @@ def derive_contracts(llm, contracts_description: str | None, steps: list[dict]) 
                   "model flakiness on this call, not a real 'nothing applies' answer. Edit spec.yaml by "
                   "hand or re-run.")
     return []
+
+
+def materialize_grounding_sources(contracts: list[dict], steps: list[dict], output_dir: Path) -> list[dict]:
+    """The Judges catalog (built separately, per DESIGN.md) reads a grounding
+    contract's `sources` as file paths on disk. Ours can instead be a step id —
+    the id of a step whose own `value` IS the source content, when the flow typed
+    the content in itself rather than reading a pre-existing file. Rather than
+    teach the judge about step-id references, resolve that gap here: write the
+    step's value out as a real file so the file-based judge works unmodified.
+    Anything already a real path, or that doesn't resolve to a known step either,
+    is left untouched — there's nothing more we can do with it on this side."""
+    steps_by_id = {s["id"]: s for s in steps}
+    sources_dir = output_dir / "sources"
+
+    for contract in contracts:
+        if contract.get("type") != "grounding" or not contract.get("sources"):
+            continue
+        resolved = []
+        for source in contract["sources"]:
+            if Path(source).exists():
+                resolved.append(source)
+                continue
+            step = steps_by_id.get(source)
+            if step is None or step.get("value") is None:
+                resolved.append(source)
+                continue
+            sources_dir.mkdir(parents=True, exist_ok=True)
+            path = sources_dir / f"{source}.txt"
+            path.write_text(step["value"], encoding="utf-8")
+            resolved.append(str(path.resolve()))
+        contract["sources"] = resolved
+
+    return contracts
+
+
+def derive_and_materialize_contracts(llm, contracts_description: str | None, steps: list[dict],
+                                      output_dir: Path) -> list[dict]:
+    """derive_contracts() + materialize_grounding_sources() in one call — the two
+    call sites (initial compile, and the contracts-only retry loop) both need both
+    steps, so this keeps them a one-line swap instead of duplicating the pairing."""
+    contracts = derive_contracts(llm, contracts_description, steps)
+    return materialize_grounding_sources(contracts, steps, output_dir)
